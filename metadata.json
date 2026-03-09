@@ -1,0 +1,5 @@
+{
+  "name": "HerbVision 中草药图像识别系统",
+  "description": "基于深度学习的中草药图像识别与分类平台，提供快速、准确的药材鉴定服务。",
+  "requestFramePermissions": []
+}
