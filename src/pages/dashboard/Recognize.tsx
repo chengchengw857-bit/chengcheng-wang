@@ -75,8 +75,11 @@ export default function Recognize() {
         body: formData,
       });
 
-      if (!res.ok) throw new Error('识别失败');
       const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || '识别失败，请检查网络或图片');
+      }
+      
       const resultData = JSON.parse(data.result);
       setResult(resultData);
       

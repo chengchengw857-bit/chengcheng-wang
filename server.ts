@@ -8,15 +8,21 @@ dotenv.config();
 
 const app = express();
 const PORT = 3000;
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ 
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
+});
 
 // Initialize Gemini
+if (!process.env.GEMINI_API_KEY) {
+  console.error("GEMINI_API_KEY is not set");
+}
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 // API routes
 app.post("/api/recognize", upload.single("image"), async (req, res) => {
   if (!req.file) {
-    return res.status(400).json({ error: "No image uploaded" });
+    return res.status(400).json({ error: "No image uploaded or file too large (max 5MB)" });
   }
 
   try {
@@ -39,10 +45,14 @@ app.post("/api/recognize", upload.single("image"), async (req, res) => {
       },
     });
 
+    if (!response.text) {
+      throw new Error("No response from AI model");
+    }
+
     res.json({ success: true, result: response.text });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Recognition error:", error);
-    res.status(500).json({ error: "Recognition failed" });
+    res.status(500).json({ error: error.message || "Recognition failed" });
   }
 });
 
