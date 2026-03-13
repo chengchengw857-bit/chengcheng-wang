@@ -14,10 +14,11 @@ const upload = multer({
 });
 
 // Initialize Gemini
-if (!process.env.GEMINI_API_KEY) {
-  console.error("GEMINI_API_KEY is not set");
+const apiKey = process.env.API_KEY || process.env.GEMINI_API_KEY;
+if (!apiKey) {
+  console.error("No API key found (neither API_KEY nor GEMINI_API_KEY is set)");
 }
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
+const ai = new GoogleGenAI({ apiKey: apiKey! });
 
 // API routes
 app.post("/api/recognize", upload.single("image"), async (req, res) => {

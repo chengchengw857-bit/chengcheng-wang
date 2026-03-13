@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
+  console.log("GEMINI_API_KEY exists:", !!process.env.GEMINI_API_KEY);
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
